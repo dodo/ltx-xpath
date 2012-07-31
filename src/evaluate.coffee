@@ -1,5 +1,5 @@
 { isArray } = Array
-flatten_map = (arr, fn) ->
+foldl = (arr, fn) ->
     # like Array::map but flattens the result
     arr.reduce(((a,e) -> a.concat(fn(e))), [])
 
@@ -17,14 +17,14 @@ exports.axes = axes =
         r.push(n)
         return r
     'descendant': (n) ->
-        flatten_map(n.children, axes['descendant-or-self'])
+        foldl(n.children, axes['descendant-or-self'])
     'descendant-or-self': (n) ->
         r = axes.descendant(n)
         r.unshift(n)
         return r
 
 exports.operations = operations =
-    'union': (args) -> flatten_map(args, (n) -> n())
+    'union': (args) -> foldl(args, (n) -> n())
     'or': (args) -> (a = args[0]()).length and a or args[1]()
     'and': (args) -> operations.union(args)
 
@@ -34,7 +34,7 @@ exports.evaluate = evaluate = (expressions, nodes, namespaces = {}) ->
         xmlns = namespaces[exp.prefix]
         if exp.axis
             if axes[exp.axis]?
-                nodes = flatten_map(nodes, axes[exp.axis])
+                nodes = foldl(nodes, axes[exp.axis])
             else
                 console.error "unknown axis '#{exp.axis}'"
 
