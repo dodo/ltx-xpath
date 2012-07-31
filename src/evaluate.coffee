@@ -23,9 +23,14 @@ exports.axes = axes =
         r.unshift(n)
         return r
 
+exports.operations = operations =
+    'union': (args) -> flatten_map(args, (n) -> n())
+    'or': (args) -> (a = args[0]()).length and a or args[1]()
+    'and': (args) -> operations.union(args)
 
 exports.evaluate = evaluate = (expressions, nodes, namespaces = {}) ->
     for exp in expressions
+        nodes = evaluate(exp.expression, nodes, namespaces) if exp.expression?
         xmlns = namespaces[exp.prefix]
         if exp.axis
             if axes[exp.axis]?
@@ -34,10 +39,17 @@ exports.evaluate = evaluate = (expressions, nodes, namespaces = {}) ->
                 console.error "unknown axis '#{exp.axis}'"
 
         # TODO predicate
-        nodes = evaluate(exp.expression, nodes, namespaces) if exp.expression?
         if exp.args
             # TODO args
+            if exp.operator?
+                if operations[exp.operator]?
+                    args = exp.args.slice().map (arg) ->
+                        # only evaluate if needed
+                        (() -> evaluate(arg, nodes.slice(), namespaces))
+                    nodes = operations[exp.operator](args)
+                else
+                    console.error "unknown operator '#{exp.operator}'"
         else
-            nodes = nodes.filter((n) -> n.is(exp.nc, xmlns))
+            nodes = nodes.filter((n) -> n.is(exp.nc, xmlns)) if exp.nc?
     return nodes
 

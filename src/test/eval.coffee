@@ -33,3 +33,15 @@ module.exports =
         æ.equals 3, match.length
         æ.done()
 
+    op: (æ) ->
+        expressions = parse "/c | o | l"
+        elem = new Element('über').c('c').up().c('o').up().c('o').up().c('l').up()
+        console.log expressions
+        console.log elem.toString()
+        match = evaluate(expressions, [elem])
+        for el in match
+            console.log(el.toString())
+            æ.equals "o", el.name.replace(/c|l/,"o")
+        æ.equals 4, match.length
+        æ.done()
+
