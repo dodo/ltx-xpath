@@ -46,12 +46,17 @@ exports.evaluate = evaluate = (expressions, nodes, namespaces = {}) ->
         nodes = evaluate(exp.expression, nodes, namespaces) if exp.expression?
         xmlns = namespaces[exp.prefix]
         if exp.axis
-            if axes[exp.axis]?
-                nodes = foldl(nodes, axes[exp.axis])
+            if (axis = axes[exp.axis])?
+                nodes = foldl nodes, (n) ->
+                    predicate = [true]
+                    if exp.predicate?
+                        # revemo every node for which the predicate evaluates to false
+                        predicate = foldl exp.predicate.slice(), (pred) ->
+                            evaluate(pred, [n], namespaces)
+                    return if predicate[0] then axis(n, exp) else []
             else
                 console.error "unknown axis '#{exp.axis}'"
 
-        # TODO predicate
         if exp.args
             args = exp.args.slice().map (arg) ->
                 # only evaluate if needed
@@ -66,7 +71,10 @@ exports.evaluate = evaluate = (expressions, nodes, namespaces = {}) ->
                     nodes = functions[exp.nc](args, nodes)
                 else
                     console.error "unknown function '#{exp.nc}'"
-        else
-            nodes = nodes.filter((n) -> n.is?(exp.nc, xmlns)) if exp.nc?
+        else if exp.nc?
+            nodes = nodes.filter((n) -> n.is?(exp.nc, xmlns) ? true)
+        if exp.value
+            nodes = nodes.filter((n) -> not n.is?)
+            nodes.push exp.value
     return nodes
 
