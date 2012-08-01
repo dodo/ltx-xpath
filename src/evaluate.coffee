@@ -50,7 +50,7 @@ exports.evaluate = evaluate = (expressions, nodes, namespaces = {}) ->
                 nodes = foldl nodes, (n) ->
                     predicate = [true]
                     if exp.predicate?
-                        # revemo every node for which the predicate evaluates to false
+                        # only add acis nodes when predicate evaluates to true
                         predicate = foldl exp.predicate.slice(), (pred) ->
                             evaluate(pred, [n], namespaces)
                     return if predicate[0] then axis(n, exp) else []
