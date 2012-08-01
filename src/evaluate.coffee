@@ -28,6 +28,16 @@ exports.operations = operations =
     'or': (args) -> (a = args[0]()).length and a or args[1]()
     'and': (args) -> operations.union(args)
 
+exports.functions = functions =
+    'node': (args, nodes) ->
+        if args.length > 1 or Object.keys(args[0]).length > 0
+            console.warn "ignoring arguments"
+        nodes.filter((n) -> n?.is?)
+    'text': (args, nodes) ->
+        # FIXME args
+        nodes.filter((n) -> typeof n is 'string')
+
+
 exports.evaluate = evaluate = (expressions, nodes, namespaces = {}) ->
     for exp in expressions
         nodes = evaluate(exp.expression, nodes, namespaces) if exp.expression?
@@ -40,16 +50,20 @@ exports.evaluate = evaluate = (expressions, nodes, namespaces = {}) ->
 
         # TODO predicate
         if exp.args
-            # TODO args
+            args = exp.args.slice().map (arg) ->
+                # only evaluate if needed
+                (() -> evaluate(arg, nodes.slice(), namespaces))
             if exp.operator?
                 if operations[exp.operator]?
-                    args = exp.args.slice().map (arg) ->
-                        # only evaluate if needed
-                        (() -> evaluate(arg, nodes.slice(), namespaces))
                     nodes = operations[exp.operator](args)
                 else
                     console.error "unknown operator '#{exp.operator}'"
+            else if exp.nc?
+                if functions[exp.nc]?
+                    nodes = functions[exp.nc](args, nodes)
+                else
+                    console.error "unknown function '#{exp.nc}'"
         else
-            nodes = nodes.filter((n) -> n.is(exp.nc, xmlns)) if exp.nc?
+            nodes = nodes.filter((n) -> n.is?(exp.nc, xmlns)) if exp.nc?
     return nodes
 

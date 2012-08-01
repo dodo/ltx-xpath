@@ -45,3 +45,19 @@ module.exports =
         æ.equals 4, match.length
         æ.done()
 
+    presence: (æ) ->
+        expressions = parse "presence[@type='chat']"
+        elem1 = new Element('presence', type:'chat')
+            .c('show').t('chat').up()
+            .c('status').t('foo').root()
+        elem2 = new Element('presence', type:'subscribed', to:"juliet@domain.lit")
+        console.log expressions
+        console.log elem1.toString(), elem2.toString()
+        match = evaluate(expressions, [elem1, elem2])
+        for el in match
+            console.log(el.toString())
+            æ.equals "presence", el.name
+            æ.equals "chat", el.attrs.type
+        æ.equals 1, match.length
+        æ.done()
+
