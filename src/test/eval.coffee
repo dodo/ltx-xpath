@@ -34,7 +34,7 @@ module.exports =
         æ.done()
 
     op: (æ) ->
-        expressions = parse "/c | o | l"
+        expressions = parse "c | o | l"
         elem = new Element('über').c('c').up().c('o').up().c('o').up().c('l').up()
         console.log expressions
         console.log elem.toString()
@@ -46,7 +46,7 @@ module.exports =
         æ.done()
 
     presence: (æ) ->
-        expressions = parse "presence[@type='chat']"
+        expressions = parse "self::presence[@type='chat']"
         elem1 = new Element('presence', type:'chat')
             .c('show').t('chat').up()
             .c('status').t('foo').root()
