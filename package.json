@@ -10,9 +10,11 @@
 , "dependencies": {
     "xpath-parser": "0.0.1"}
 , "scripts": {
+    "test": "cake build && nodeunit test",
     "prepublish": "cake build"}
 , "devDependencies": {
     "ltx": ">= 0.2.1",
+    "nodeunit": ">= 0.5.4",
     "muffin": ">= 0.2.6",
     "coffee-script": ">= 1.1.3"}
 }
