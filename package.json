@@ -8,7 +8,7 @@
 , "engines": {"node": ">= 0.4.x"}
 , "keywords": ["damn", "small", "primitive", "simple", "xpath", "evaluator", "ltx"]
 , "dependencies": {
-    "xpath-parser": "https://github.com/dodo/xpath-parser/tarball/master"}
+    "xpath-parser": ">= 0.0.3"}
 , "scripts": {
     "test": "cake build && nodeunit test",
     "prepublish": "cake build"}
