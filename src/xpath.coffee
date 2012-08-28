@@ -5,13 +5,15 @@
 class exports.XPath extends EventEmitter
     constructor: () ->
         @_expressions = {}
-        @on('newListener', @onlistener)
 
-    onlistener: (event, listener) ->
+    addListener: (event, ns, listener) ->
         return if @_expressions[event]?
+        [ns, listener] = [null, ns] if typeof ns is 'function'
         exp = parse event
         exp.event = event
+        exp.namespace = ns
         @_expressions[event] = exp # TODO sort expressions as tree
+    on:@addListener
 
     removeListener: (event) ->
         @_expressions[event] = null
@@ -20,7 +22,7 @@ class exports.XPath extends EventEmitter
     match: (elem) =>
         matched = no
         for event, expression of @_expressions
-            if evaluate(expression, [elem])
+            if evaluate(expression, [elem], expression.namespace)
                 matched = yes
                 @emit(event, elem)
         return matched
