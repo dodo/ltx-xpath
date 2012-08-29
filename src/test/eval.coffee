@@ -61,3 +61,40 @@ module.exports =
         æ.equals 1, match.length
         æ.done()
 
+    and_presence: (æ) ->
+        expressions = parse "self::presence[@type='chat' or @id='id']"
+        console.log {expressions}
+        elem1 = new Element('presence', type:'chat', id:'id')
+            .c('show').t('chat').up()
+            .c('status').t('foo').root()
+        elem2 = new Element('presence', type:'subscribed', to:"juliet@domain.lit")
+        console.log elem1.toString(), elem2.toString()
+        match = evaluate(expressions, [elem1, elem2])
+        for el in match
+            console.log(el.toString())
+            æ.equals "presence", el.name
+            æ.equals "chat", el.attrs.type
+        æ.equals 1, match.length
+        æ.done()
+
+    info: (æ) ->
+        ns = "http://jabber.org/protocol/disco#info"
+        expressions = parse "self::iq[@type=get]/info:query"
+        console.log {expressions}
+        elem1 = new Element("iq", to:"juliet@domain.lit", id:"id", type:"get")
+            .c("query", xmlns:ns).root()
+        elem2 = new Element("iq", to:"juliet@domain.lit", id:"id", type:"get")
+            .c("query", xmlns:"other").root()
+        console.log elem1.toString(), elem2.toString()
+        match = evaluate(expressions, [elem1, elem2], {info:ns})
+        for m in match
+            el = m.root()
+            console.log(el.toString())
+            æ.equals "iq", el.name
+            æ.equals "get", el.attrs.type
+            æ.equals ns, el.children[0].getNS()
+        æ.equals 1, match.length
+        æ.done()
+
+
+
