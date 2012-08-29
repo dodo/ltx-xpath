@@ -28,7 +28,7 @@ exports.axes = axes =
 exports.operations = operations =
     'union': (args) -> foldl(args, (n) -> n())
     'or': (args) -> (a = args[0]()).length and a or args[1]()
-    'and': (args) -> operations.union(args)
+    'and': (args) -> [operations.union(args).every((e) -> e is true)]
     '=': (args) -> args[0]()[0] is args[1]()[0]
 
 exports.functions = functions =
