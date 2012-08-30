@@ -26,8 +26,9 @@ class exports.XPath extends EventEmitter
         super(event, listener)
 
     removeListener: (event) ->
-        @_expressions[event] = null
-        super
+        res = super
+        @_expressions[event] = null unless @listeners(event).length
+        return res
 
     match: (elem) =>
         matched = no
