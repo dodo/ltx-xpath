@@ -6,15 +6,24 @@ class exports.XPath extends EventEmitter
     constructor: () ->
         @_expressions = {}
 
+    addExpression: (xpath, namespaces) ->
+        exp = parse xpath
+        exp.xpath = xpath
+        exp.namespace = ns
+        @_expressions[xpath] = exp # TODO sort expressions as tree
+
     addListener: (event, ns, listener) ->
         return super(event, listener) if @_expressions[event]?
         [ns, listener] = [null, ns] unless listener?
-        exp = parse event
-        exp.event = event
-        exp.namespace = ns
-        @_expressions[event] = exp # TODO sort expressions as tree
+        @addExpression(event, ns)
         super(event, listener)
     on:@addListener
+
+    once: (event, ns, listener) ->
+        return super(event, listener) if @_expressions[event]?
+        [ns, listener] = [null, ns] unless listener?
+        @addExpression(event, ns)
+        super(event, listener)
 
     removeListener: (event) ->
         @_expressions[event] = null
