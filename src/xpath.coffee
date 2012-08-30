@@ -7,12 +7,13 @@ class exports.XPath extends EventEmitter
         @_expressions = {}
 
     addListener: (event, ns, listener) ->
-        return if @_expressions[event]?
-        [ns, listener] = [null, ns] if typeof ns is 'function'
+        return super(event, listener) if @_expressions[event]?
+        [ns, listener] = [null, ns] unless listener?
         exp = parse event
         exp.event = event
         exp.namespace = ns
         @_expressions[event] = exp # TODO sort expressions as tree
+        super(event, listener)
     on:@addListener
 
     removeListener: (event) ->
