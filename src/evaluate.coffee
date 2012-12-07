@@ -76,5 +76,6 @@ exports.evaluate = evaluate = (expressions, nodes, namespaces = {}) ->
         if exp.value
             nodes = nodes.filter((n) -> not n.is?)
             nodes.push exp.value
+        break if nodes.length is 0 # no context nodes anymore
     return nodes
 
