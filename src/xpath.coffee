@@ -9,7 +9,7 @@ class exports.XPath extends EventEmitter
     addExpression: (xpath, namespaces) ->
         exp = parse xpath
         exp.xpath = xpath
-        exp.namespace = ns
+        exp.namespace = namespaces
         @_expressions[xpath] = exp # TODO sort expressions as tree
 
     addListener: (event, ns, listener) ->
