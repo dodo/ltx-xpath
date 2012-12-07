@@ -33,7 +33,8 @@ class exports.XPath extends EventEmitter
     match: (elem) =>
         matched = no
         for event, expression of @_expressions
-            if evaluate(expression, [elem], expression.namespace)?.length
+            match = evaluate(expression, [elem], expression.namespace)
+            if match.length
                 matched = yes
-                @emit(event, elem)
+                @emit(event, elem, match)
         return matched
