@@ -17,7 +17,7 @@ class exports.XPath extends EventEmitter
         [ns, listener] = [null, ns] unless listener?
         @addExpression(event, ns)
         super(event, listener)
-    on:@addListener
+    on:@::addListener
 
     once: (event, ns, listener) ->
         return super(event, listener) if @_expressions[event]?
