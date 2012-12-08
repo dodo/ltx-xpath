@@ -8,7 +8,7 @@
 , "engines": {"node": ">= 0.4.x"}
 , "keywords": ["damn", "small", "primitive", "simple", "xpath", "evaluator", "ltx"]
 , "dependencies": {
-    "xpath-parser": ">= 0.0.4"}
+    "xpath-parser": ">= 0.0.6"}
 , "scripts": {
     "test": "cake build && nodeunit test",
     "prepublish": "cake build"}
