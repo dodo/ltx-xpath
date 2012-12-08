@@ -39,6 +39,8 @@ exports.functions = functions =
     'text': (args, nodes) ->
         # FIXME args
         nodes.filter((n) -> typeof n is 'string')
+    'not': (args, nodes) ->
+        if not args[0]()[0] then nodes else []
 
 
 exports.evaluate = evaluate = (expressions, nodes, namespaces = {}) ->
