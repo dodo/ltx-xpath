@@ -13,15 +13,15 @@ class exports.XPath extends EventEmitter
         @_expressions[xpath] = exp # TODO sort expressions as tree
 
     addListener: (event, ns, listener) ->
-        return super(event, listener) if @_expressions[event]?
         [ns, listener] = [null, ns] unless listener?
+        return super(event, listener) if @_expressions[event]?
         @addExpression(event, ns)
         super(event, listener)
     on:@::addListener
 
     once: (event, ns, listener) ->
-        return super(event, listener) if @_expressions[event]?
         [ns, listener] = [null, ns] unless listener?
+        return super(event, listener) if @_expressions[event]?
         @addExpression(event, ns)
         super(event, listener)
 
