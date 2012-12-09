@@ -98,7 +98,7 @@ module.exports =
 
     'not': (æ) ->
         ns = "http://jabber.org/protocol/disco#info"
-        expressions = parse "self::iq[not(@type)]/info:query"
+        expressions = parse "self::iq[not(@type)]/info:query/self::*"
         console.log {expressions}
         elem1 = new Element("iq", to:"juliet@domain.lit", id:"id")
             .c("query", xmlns:ns).root()
@@ -106,12 +106,11 @@ module.exports =
             .c("query", xmlns:ns).root()
         console.log elem1.toString(), elem2.toString()
         match = evaluate(expressions, [elem1, elem2], {info:ns})
-        for m in match
-            el = m.root()
+        for el in match
             console.log(el.toString())
-            æ.equals "iq", el.name
+            æ.equals "query", el.name
             æ.equals undefined, el.attrs.type
-            æ.equals ns, el.children[0].getNS()
+            æ.equals ns, el.getNS()
         æ.equals 1, match.length
         æ.done()
 

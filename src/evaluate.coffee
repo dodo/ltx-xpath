@@ -73,7 +73,7 @@ exports.evaluate = evaluate = (expressions, nodes, namespaces = {}) ->
                     nodes = functions[exp.nc](args, nodes)
                 else
                     console.error "unknown function '#{exp.nc}'"
-        else if exp.nc?
+        else if exp.nc? and exp.nc isnt "*"
             nodes = nodes.filter((n) -> n.is?(exp.nc, xmlns) ? true)
         if exp.value
             nodes = nodes.filter((n) -> not n.is?)
