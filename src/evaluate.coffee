@@ -4,7 +4,7 @@ foldl = (arr, fn) ->
     arr.reduce(((a,e) -> a.concat(fn(e))), [])
 
 exports.axes = axes =
-    'document-root': (n) -> n.root()
+    'document-root': (n) -> [n.root()]
     'self':   (n) -> [n]
     'parent': (n) -> n.parent? and [n.parent] or []
     'child':  (n) -> n.children ? []
@@ -29,7 +29,7 @@ exports.operations = operations =
     'union': (args) -> foldl(args, (n) -> n())
     'or': (args) -> (a = args[0]()).length and a or args[1]()
     'and': (args) -> [operations.union(args).every((e) -> e is true)]
-    '=': (args) -> args[0]()[0] is args[1]()[0]
+    '=': (args) -> [args[0]()[0] is args[1]()[0]]
 
 exports.functions = functions =
     'node': (args, nodes) ->
