@@ -1,6 +1,6 @@
 { "name": "ltx-xpath"
 , "description": "xpath evaluator for ltx"
-, "version": "0.0.5"
+, "version": "0.0.6"
 , "homepage": "https://github.com/dodo/ltx-xpath"
 , "author": "dodo (https://github.com/dodo)"
 , "repository": {"type": "git", "url": "git://github.com/dodo/ltx-xpath.git"}
@@ -8,7 +8,7 @@
 , "engines": {"node": ">= 0.4.x"}
 , "keywords": ["damn", "small", "primitive", "simple", "xpath", "evaluator", "ltx"]
 , "dependencies": {
-    "xpath-parser": ">= 0.0.6"}
+    "xpath-parser": ">= 0.0.7"}
 , "scripts": {
     "test": "cake build && nodeunit test",
     "prepublish": "cake build"}
