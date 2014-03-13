@@ -42,8 +42,18 @@ exports.functions = functions =
     'not': (args, nodes) ->
         if not args[0]()[0] then nodes else []
 
+exports.evaluate = (expressions, nodes, namespaces = {}) ->
+    # An absolute location path consists of / optionally followed by a relative
+    #  location path. A / by itself selects the root node of the document
+    #  containing the context node. If it is followed by a relative location
+    #  path, then the location path selects the set of nodes that would be
+    #  selected by the relative location path relative to the root node of the
+    #  document containing the context node.
+    if  expressions[0]?.seperator is '/' and expressions[0]?.axis is 'child'
+        expressions[0].axis = 'self'
+    return evaluate(expressions, nodes, namespaces)
 
-exports.evaluate = evaluate = (expressions, nodes, namespaces = {}) ->
+evaluate = (expressions, nodes, namespaces) ->
     for exp in expressions
         nodes = evaluate(exp.expression, nodes, namespaces) if exp.expression?
         xmlns = namespaces[exp.prefix]
