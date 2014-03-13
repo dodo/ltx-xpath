@@ -7,8 +7,8 @@ exports.axes = axes =
     'document-root': (n) -> [n.root()]
     'self':   (n) -> [n]
     'parent': (n) -> n.parent? and [n.parent] or []
-    'child':  (n) -> n.children ? []
-    'attribute': (n, {nc}) -> n.attrs[nc]? and [n.attrs[nc]] or []
+    'child':  (n) -> n?.children ? []
+    'attribute': (n, {nc}) -> n?.attrs?[nc]? and [n.attrs[nc]] or []
     'ancestor': (n) ->
         r = []
         r.unshift(n) while (n = n.parent)
@@ -18,7 +18,7 @@ exports.axes = axes =
         r.push(n)
         return r
     'descendant': (n) ->
-        foldl(n.children ? [], axes['descendant-or-self'])
+        foldl(n?.children ? [], axes['descendant-or-self'])
     'descendant-or-self': (n) ->
         r = axes.descendant(n)
         r.unshift(n)
