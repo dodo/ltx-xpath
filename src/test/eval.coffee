@@ -112,6 +112,26 @@ module.exports =
         æ.equals 1, match.length
         æ.done()
 
+    'self::info': (æ) ->
+        ns = "http://jabber.org/protocol/disco#info"
+        expressions = parse "self::iq[@type=get]/info:query"
+        debug inspect expressions
+        elem1 = new Element("iq", to:"juliet@domain.lit", id:"id", type:"get")
+            .c("query", xmlns:ns).root()
+        elem2 = new Element("iq", to:"juliet@domain.lit", id:"id", type:"get")
+            .c("query", xmlns:"other").root()
+        debug elem1.toString()
+        debug elem2.toString()
+        match = evaluate(expressions, [elem1, elem2], {info:ns})
+        for m in match
+            el = m.root()
+            debug el.toString()
+            æ.equals "iq", el.name
+            æ.equals "get", el.attrs.type
+            æ.equals ns, el?.children?[0].getNS()
+        æ.equals 1, match.length
+        æ.done()
+
     'not': (æ) ->
         ns = "http://jabber.org/protocol/disco#info"
         expressions = parse "/iq[not(@type)]/info:query/self::*"
