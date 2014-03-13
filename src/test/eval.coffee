@@ -1,6 +1,8 @@
 { Element } = require 'ltx'
 { parse } = require 'xpath-parser'
 { evaluate } = require '../lib/evaluate'
+debug = require('debug') 'test:eval'
+inspect = require('eyes').inspector(stream:null)
 
 
 module.exports =
@@ -8,11 +10,11 @@ module.exports =
     simple: (æ) ->
         expressions = parse "/über/o"
         elem = new Element('über').c('c').up().c('o').up().c('o').up().c('l').up()
-        console.log expressions
-        console.log elem.toString()
+        debug inspect expressions
+        debug elem.toString()
         match = evaluate(expressions, [elem])
         for el in match
-            console.log(el.toString())
+            debug el.toString()
             æ.equals "o", el.name
         æ.equals 2, match.length
         æ.done()
@@ -20,11 +22,11 @@ module.exports =
     root: (æ) ->
         expressions = parse "/"
         elem = new Element('root').c('beer').up()
-        console.log inspect expressions
-        console.log elem.toString()
+        debug inspect expressions
+        debug elem.toString()
         match = evaluate(expressions, [elem])
         for el in match
-            console.log el.toString()
+            debug el.toString()
             æ.equals "root", el.name
         æ.equals 1, match.length
         æ.done()
@@ -34,12 +36,12 @@ module.exports =
         elem = new Element('ü').c('b').c('o').c('r')
             .c('c').up().c('o').up().c('o').up().c('l').up()
             .up().up().up()
-        console.log expressions
-        console.log elem.toString()
+        debug inspect expressions
+        debug elem.toString()
         match = evaluate(expressions, [elem])
         æ.equals 1, match[0]?.children?.length
         for el in match
-            console.log(el.toString())
+            debug el.toString()
             æ.equals "o", el.name
         æ.equals 3, match.length
         æ.done()
@@ -47,11 +49,11 @@ module.exports =
     op: (æ) ->
         expressions = parse "c | o | l"
         elem = new Element('über').c('c').up().c('o').up().c('o').up().c('l').up()
-        console.log expressions
-        console.log elem.toString()
+        debug inspect expressions
+        debug elem.toString()
         match = evaluate(expressions, [elem])
         for el in match
-            console.log(el.toString())
+            debug el.toString()
             æ.equals "o", el.name.replace(/c|l/,"o")
         æ.equals 4, match.length
         æ.done()
@@ -62,11 +64,12 @@ module.exports =
             .c('show').t('chat').up()
             .c('status').t('foo').root()
         elem2 = new Element('presence', type:'subscribed', to:"juliet@domain.lit")
-        console.log expressions
-        console.log elem1.toString(), elem2.toString()
+        debug inspect expressions
+        debug elem1.toString()
+        debug elem2.toString()
         match = evaluate(expressions, [elem1, elem2])
         for el in match
-            console.log(el.toString())
+            debug el.toString()
             æ.equals "presence", el.name
             æ.equals "chat", el.attrs.type
         æ.equals 1, match.length
@@ -74,15 +77,16 @@ module.exports =
 
     and_presence: (æ) ->
         expressions = parse "/presence[@type='chat' or @id='id']"
-        console.log {expressions}
+        debug inspect expressions
         elem1 = new Element('presence', type:'chat', id:'id')
             .c('show').t('chat').up()
             .c('status').t('foo').root()
         elem2 = new Element('presence', type:'subscribed', to:"juliet@domain.lit")
-        console.log elem1.toString(), elem2.toString()
+        debug elem1.toString()
+        debug elem2.toString()
         match = evaluate(expressions, [elem1, elem2])
         for el in match
-            console.log(el.toString())
+            debug el.toString()
             æ.equals "presence", el.name
             æ.equals "chat", el.attrs.type
         æ.equals 1, match.length
@@ -91,16 +95,17 @@ module.exports =
     info: (æ) ->
         ns = "http://jabber.org/protocol/disco#info"
         expressions = parse "/iq[@type=get]/info:query"
-        console.log {expressions}
+        debug inspect expressions
         elem1 = new Element("iq", to:"juliet@domain.lit", id:"id", type:"get")
             .c("query", xmlns:ns).root()
         elem2 = new Element("iq", to:"juliet@domain.lit", id:"id", type:"get")
             .c("query", xmlns:"other").root()
-        console.log elem1.toString(), elem2.toString()
+        debug elem1.toString()
+        debug elem2.toString()
         match = evaluate(expressions, [elem1, elem2], {info:ns})
         for m in match
             el = m.root()
-            console.log(el.toString())
+            debug el.toString()
             æ.equals "iq", el.name
             æ.equals "get", el.attrs.type
             æ.equals ns, el?.children?[0].getNS()
@@ -110,15 +115,16 @@ module.exports =
     'not': (æ) ->
         ns = "http://jabber.org/protocol/disco#info"
         expressions = parse "/iq[not(@type)]/info:query/self::*"
-        console.log {expressions}
+        debug inspect expressions
         elem1 = new Element("iq", to:"juliet@domain.lit", id:"id")
             .c("query", xmlns:ns).root()
         elem2 = new Element("iq", to:"juliet@domain.lit", id:"id", type:"get")
             .c("query", xmlns:ns).root()
-        console.log elem1.toString(), elem2.toString()
+        debug elem1.toString()
+        debug elem2.toString()
         match = evaluate(expressions, [elem1, elem2], {info:ns})
         for el in match
-            console.log(el.toString())
+            debug el.toString()
             æ.equals "query", el.name
             æ.equals undefined, el.attrs.type
             æ.equals ns, el.getNS()

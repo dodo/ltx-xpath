@@ -14,6 +14,8 @@
     "prepublish": "cake build"}
 , "devDependencies": {
     "ltx": ">= 0.2.1",
+    "eyes": "~0.1.8",
+    "debug": "~0.7.4",
     "nodeunit": ">= 0.5.4",
     "muffin": ">= 0.2.6",
     "coffee-script": ">= 1.1.3"}
