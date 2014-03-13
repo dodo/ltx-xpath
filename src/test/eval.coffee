@@ -6,7 +6,7 @@
 module.exports =
 
     simple: (æ) ->
-        expressions = parse "/o"
+        expressions = parse "/über/o"
         elem = new Element('über').c('c').up().c('o').up().c('o').up().c('l').up()
         console.log expressions
         console.log elem.toString()
@@ -17,6 +17,17 @@ module.exports =
         æ.equals 2, match.length
         æ.done()
 
+    root: (æ) ->
+        expressions = parse "/"
+        elem = new Element('root').c('beer').up()
+        console.log inspect expressions
+        console.log elem.toString()
+        match = evaluate(expressions, [elem])
+        for el in match
+            console.log el.toString()
+            æ.equals "root", el.name
+        æ.equals 1, match.length
+        æ.done()
 
     descendant: (æ) ->
         expressions = parse "//o"
@@ -26,7 +37,7 @@ module.exports =
         console.log expressions
         console.log elem.toString()
         match = evaluate(expressions, [elem])
-        æ.equals 1, match[0].children.length
+        æ.equals 1, match[0]?.children?.length
         for el in match
             console.log(el.toString())
             æ.equals "o", el.name
@@ -46,7 +57,7 @@ module.exports =
         æ.done()
 
     presence: (æ) ->
-        expressions = parse "self::presence[@type='chat']"
+        expressions = parse "/presence[@type='chat']"
         elem1 = new Element('presence', type:'chat')
             .c('show').t('chat').up()
             .c('status').t('foo').root()
@@ -62,7 +73,7 @@ module.exports =
         æ.done()
 
     and_presence: (æ) ->
-        expressions = parse "self::presence[@type='chat' or @id='id']"
+        expressions = parse "/presence[@type='chat' or @id='id']"
         console.log {expressions}
         elem1 = new Element('presence', type:'chat', id:'id')
             .c('show').t('chat').up()
@@ -79,7 +90,7 @@ module.exports =
 
     info: (æ) ->
         ns = "http://jabber.org/protocol/disco#info"
-        expressions = parse "self::iq[@type=get]/info:query"
+        expressions = parse "/iq[@type=get]/info:query"
         console.log {expressions}
         elem1 = new Element("iq", to:"juliet@domain.lit", id:"id", type:"get")
             .c("query", xmlns:ns).root()
@@ -92,13 +103,13 @@ module.exports =
             console.log(el.toString())
             æ.equals "iq", el.name
             æ.equals "get", el.attrs.type
-            æ.equals ns, el.children[0].getNS()
+            æ.equals ns, el?.children?[0].getNS()
         æ.equals 1, match.length
         æ.done()
 
     'not': (æ) ->
         ns = "http://jabber.org/protocol/disco#info"
-        expressions = parse "self::iq[not(@type)]/info:query/self::*"
+        expressions = parse "/iq[not(@type)]/info:query/self::*"
         console.log {expressions}
         elem1 = new Element("iq", to:"juliet@domain.lit", id:"id")
             .c("query", xmlns:ns).root()
