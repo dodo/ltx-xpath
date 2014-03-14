@@ -50,7 +50,7 @@ exports.evaluate = (expressions, nodes, namespaces = {}) ->
     #  selected by the relative location path relative to the root node of the
     #  document containing the context node.
     if  expressions[0]?.seperator is '/' and expressions[0]?.axis is 'child'
-        expressions[0].axis = 'self'
+        expressions[0].axis = 'document-root'
     return evaluate(expressions, nodes, namespaces)
 
 evaluate = (expressions, nodes, namespaces) ->
