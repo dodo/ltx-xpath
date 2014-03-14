@@ -1,6 +1,6 @@
 { "name": "ltx-xpath"
 , "description": "xpath evaluator for ltx"
-, "version": "0.0.6"
+, "version": "0.1.0"
 , "homepage": "https://github.com/dodo/ltx-xpath"
 , "author": "dodo (https://github.com/dodo)"
 , "repository": {"type": "git", "url": "git://github.com/dodo/ltx-xpath.git"}
