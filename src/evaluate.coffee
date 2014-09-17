@@ -3,6 +3,17 @@ foldl = (arr, fn) ->
     # like Array::map but flattens the result
     arr.reduce(((a,e) -> a.concat(fn(e))), [])
 
+getopargs = (exp) ->
+    # we need to trace expressions
+    if exp?.expression?.length
+        foldl(exp.expression, getopargs)
+    # and get all operator arguments …
+    else if exp?.operator? and exp.args.length and operations[exp.operator]?
+        # … according to their rules
+        operations[exp.operator](exp.args.map((x) -> getopargs.bind(x,x[0])))
+    else
+        [exp]
+
 exports.axes = axes =
     'document-root': (n) -> [n.root()]
     'self':   (n) -> [n]
@@ -49,8 +60,9 @@ exports.evaluate = (expressions, nodes, namespaces = {}) ->
     #  path, then the location path selects the set of nodes that would be
     #  selected by the relative location path relative to the root node of the
     #  document containing the context node.
-    if  expressions[0]?.seperator is '/' and expressions[0]?.axis is 'child'
-        expressions[0].axis = 'document-root'
+    getopargs(expressions[0]).forEach (exp) ->
+        if exp?.seperator is '/' and exp?.axis is 'child'
+            exp.axis = 'document-root'
     return evaluate(expressions, nodes, namespaces)
 
 evaluate = (expressions, nodes, namespaces) ->
