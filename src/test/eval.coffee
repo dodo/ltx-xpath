@@ -135,7 +135,6 @@ module.exports =
     'not': (æ) ->
         ns = "http://jabber.org/protocol/disco#info"
         expressions = parse "/iq[not(@type)]/info:query/self::*"
-        debug inspect expressions
         elem1 = new Element("iq", to:"juliet@domain.lit", id:"id")
             .c("query", xmlns:ns).root()
         elem2 = new Element("iq", to:"juliet@domain.lit", id:"id", type:"get")
@@ -143,6 +142,7 @@ module.exports =
         debug elem1.toString()
         debug elem2.toString()
         match = evaluate(expressions, [elem1, elem2], {info:ns})
+        debug inspect expressions
         for el in match
             debug el.toString()
             æ.equals "query", el.name
@@ -151,5 +151,23 @@ module.exports =
         æ.equals 1, match.length
         æ.done()
 
+    'union': (æ) ->
+        ns = "http://jabber.org/protocol/disco#info"
+        expressions = parse "/foobar | /iq[not(@type)]/info:query/self::*"
+        elem1 = new Element("iq", to:"juliet@domain.lit", id:"id")
+            .c("query", xmlns:ns).root()
+        elem2 = new Element("iq", to:"juliet@domain.lit", id:"id", type:"get")
+            .c("query", xmlns:ns).root()
+        debug elem1.toString()
+        debug elem2.toString()
+        match = evaluate(expressions, [elem1, elem2], {info:ns})
+        debug inspect expressions
+        for el in match
+            debug el.toString()
+            æ.equals "query", el.name
+            æ.equals undefined, el.attrs.type
+            æ.equals ns, el.getNS()
+        æ.equals 1, match.length
+        æ.done()
 
 
